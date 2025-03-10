@@ -4,6 +4,7 @@ project(LibrarySystem LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories(${CMAKE_SOURCE_DIR}/src/)
+include_directories(${CMAKE_SOURCE_DIR}/headers/)
 
 # Добавляем подмодуль SQLiteCpp
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/external/SQLiteCpp/)
@@ -15,6 +16,22 @@ set(SOURCES
     src/DatabaseManager.cpp
     src/main.cpp
     src/PasswordManager.cpp
+    src/Reader.cpp
+    src/Admin.cpp
+    src/TextBook.cpp
+    src/Novel.cpp
+    src/ResearchPaper.cpp
+)
+
+set(HEADERS
+    headers/Book.h
+    headers/User.h
+    headers/Admin.h
+    headers/Reader.h
+    headers/ResearchPaper.h
+    headers/TextBook.h
+    headers/Novel.h
+    headers/PasswordManager.h
 )
 
 # Создаём исполняемый файл
