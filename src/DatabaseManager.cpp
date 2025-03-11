@@ -67,7 +67,7 @@ public:
         )");
     }
 
-    static void createBook(int id, std::string title, std::string author, Subject)
+    static void createBook(int id, std::string title, std::string author)
     {
 
     }

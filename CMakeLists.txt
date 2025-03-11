@@ -18,9 +18,9 @@ set(SOURCES
     src/PasswordManager.cpp
     src/Reader.cpp
     src/Admin.cpp
+    src/ResearchPaper.cpp
     src/TextBook.cpp
     src/Novel.cpp
-    src/ResearchPaper.cpp
 )
 
 set(HEADERS
@@ -28,10 +28,11 @@ set(HEADERS
     headers/User.h
     headers/Admin.h
     headers/Reader.h
+    headers/PasswordManager.h
     headers/ResearchPaper.h
     headers/TextBook.h
     headers/Novel.h
-    headers/PasswordManager.h
+    headers/DatabaseManager.h
 )
 
 # Создаём исполняемый файл
