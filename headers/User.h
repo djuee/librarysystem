@@ -1,6 +1,9 @@
 #pragma once
+#include <Book.h>
 #include <iostream>
 #include <string>
+#include <memory>
+#include <list>
 
 enum class Role {
     ADMIN,
@@ -22,4 +25,5 @@ protected:
     char m_passwordKey;
     std::string m_passwordHash;
     Role m_role;
+    std::list<std::shared_ptr<Book>> bookList;
 };

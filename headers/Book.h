@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <SQLiteCpp/SQLiteCpp.h>
 
 enum TypeBook { textBook, novel, researchPaper };
 
@@ -8,9 +9,18 @@ public:
     Book(int id, std::string title, std::string author);
     virtual ~Book() = default;
 
+    int getId();
+    std::string getTitle();
+    std::string getAuthor();
+    std::string getTypeBook();
+    bool isAvailable() const;
+
+    virtual std::string getInsertSQL() const = 0;
+    virtual void bindInsertParameters(SQLite::Statement& query) const = 0;
+
     void markAsBorrowed();
     void markAsAvailable();
-    bool isAvailable() const;
+
     std::string getBookText(const std::string& filePath) const;
 
 protected:

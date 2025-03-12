@@ -8,10 +8,11 @@ Reader::Reader(std::string uname, std::string pass)
 
 bool Reader::takeBook(std::shared_ptr<Book> book)
 {
-    if (book != nullptr)
+    if (book == nullptr)
     {
         return false;
     }
+
     book->markAsBorrowed();
     m_bookList.push_back(book);
     return true;
