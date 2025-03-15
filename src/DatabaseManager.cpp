@@ -72,7 +72,6 @@ bool DatabaseManager::addBook(const std::shared_ptr<Book>& book) {
 }
 
 
-
 DatabaseManager& DatabaseManager::getInstance() {
     static DatabaseManager instance;
     return instance;

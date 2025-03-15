@@ -21,6 +21,8 @@ set(SOURCES
     src/ResearchPaper.cpp
     src/TextBook.cpp
     src/Novel.cpp
+    src/LazyBook.cpp
+    src/LazyReader.cpp
 )
 
 set(HEADERS
@@ -33,6 +35,8 @@ set(HEADERS
     headers/TextBook.h
     headers/Novel.h
     headers/DatabaseManager.h
+    headers/LazyBook.h
+    headers/LazyReader.h
 )
 
 # Создаём исполняемый файл
