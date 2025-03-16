@@ -1,4 +1,5 @@
 #include <LazyBook.h>
+#include <DatabaseManager.h>
 
 LazyBook::LazyBook(int id, int typeBook)
     : m_id(id), m_typeBook(typeBook) {}
@@ -20,5 +21,15 @@ bool LazyBook::isLoaded()
 
 std::shared_ptr<Book> LazyBook::loadBook()
 {
+    if (isLoaded())
+    {
+        return m_loadedBook;
+    }
+    m_loadedBook = DatabaseManager::getInstance().loadBook(m_id);
+    return m_loadedBook;
+}
 
+void LazyBook::freeBook()
+{
+    m_loadedBook.reset();
 }

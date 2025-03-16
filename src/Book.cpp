@@ -42,7 +42,6 @@ bool Book::isAvailable() const {
 std::string Book::getBookText(const std::string& filePath) const {
     std::ifstream file(filePath);
     if (!file) {
-        std::cerr << "Не удалось открыть файл: " << filePath << std::endl;
         return "";
     }
     std::stringstream buffer;

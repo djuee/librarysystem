@@ -12,17 +12,20 @@ enum class Role {
 
 class User {
 public:
-    User(std::string uname, std::string pass, Role r);
-    virtual ~User() = default;
-
     std::string getUsername() const;
     Role getRole() const;
     bool checkPassword(const std::string& inputPassword);
     void changeUsername(std::string uname);
 
 protected:
+    User(int id, std::string uname, std::string pass, Role r);
+    User(int id, std::string uname, std::string passwordHash, int passwordKey, Role r);
+    virtual ~User() = default;
+
+protected:
+    int m_id;
     std::string m_username;
-    char m_passwordKey;
+    int m_passwordKey;
     std::string m_passwordHash;
     Role m_role;
     std::list<std::shared_ptr<Book>> bookList;

@@ -23,6 +23,7 @@ set(SOURCES
     src/Novel.cpp
     src/LazyBook.cpp
     src/LazyReader.cpp
+    src/Controller.cpp
 )
 
 set(HEADERS
@@ -37,6 +38,7 @@ set(HEADERS
     headers/DatabaseManager.h
     headers/LazyBook.h
     headers/LazyReader.h
+    headers/Controller.h
 )
 
 # Создаём исполняемый файл
