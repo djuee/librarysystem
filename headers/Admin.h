@@ -9,7 +9,8 @@
 class Admin final : public User
 {
 public:
-    Admin(std::string uname, std::string pass);
+    Admin(int id, std::string uname, std::string pass);
+    Admin(int id, std::string uname, std::string passwordHash, char passwordKey);
 
     std::shared_ptr<Book> createBook(int id, const std::string& title, const std::string& author,
                                      Subject subject, Level level, const std::string& edition); // TextBook

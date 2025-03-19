@@ -1,11 +1,11 @@
 #include "PasswordManager.h"
 #include <random>
 
-char PasswordManager::generateRandomKey() {
+int PasswordManager::generateRandomKey() {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> dist(33, 126); // видимые символы ASCII
-    return static_cast<char>(dist(gen));
+    return static_cast<int>(dist(gen));
 }
 
 std::string PasswordManager::encryptPassword(const std::string& password, const char& key) {

@@ -6,9 +6,6 @@ enum TypeBook { textBook, novel, researchPaper };
 
 class Book {
 public:
-    Book(int id, std::string title, std::string author);
-    virtual ~Book() = default;
-
     int getId();
     std::string getTitle();
     std::string getAuthor();
@@ -22,6 +19,10 @@ public:
     void markAsAvailable();
 
     std::string getBookText(const std::string& filePath) const;
+
+protected:
+    Book(int id, std::string title, std::string author);
+    virtual ~Book() = default;
 
 protected:
     int m_id;
