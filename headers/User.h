@@ -12,7 +12,10 @@ enum class Role {
 
 class User {
 public:
+    int getId() const;
     std::string getUsername() const;
+    int getPassKey() const;
+    std::string getPassHash() const;
     Role getRole() const;
     bool checkPassword(const std::string& inputPassword);
     void changeUsername(std::string uname);

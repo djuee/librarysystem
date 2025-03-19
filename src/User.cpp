@@ -10,8 +10,24 @@ User::User(int id, std::string uname, std::string pass, Role r)
 User::User(int id, std::string uname, std::string passwordHash, int passwordKey, Role r)
     : m_id(id), m_username(uname), m_passwordHash(passwordHash), m_passwordKey(passwordKey), m_role(r) {}
 
-std::string User::getUsername() const {
+int User::getId() const
+{
+    return m_id;
+}
+
+std::string User::getUsername() const
+{
     return m_username;
+}
+
+int User::getPassKey() const
+{
+    return m_passwordKey;
+}
+
+std::string User::getPassHash() const
+{
+    return m_passwordHash;
 }
 
 Role User::getRole() const {

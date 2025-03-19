@@ -18,7 +18,7 @@ bool Reader::takeBook(std::shared_ptr<Book> book)
     }
 
     book->markAsBorrowed();
-    DatabaseManager::getInstance().markBookAsBorrowed(book->getId());
+    DatabaseManager::getInstance().markBookAsBorrowed(book->getId(), m_id);
     m_bookList.push_back(book);
     return true;
 }
@@ -38,4 +38,9 @@ bool Reader::returnBook(std::shared_ptr<Book> book) {
     }
 
     return false;
+}
+
+void Reader::setBookList(const std::list<std::shared_ptr<Book>>& books)
+{
+    m_bookList = books;
 }

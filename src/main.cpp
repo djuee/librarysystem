@@ -6,11 +6,9 @@
 #include <Novel.h>
 #include <ResearchPaper.h>
 #include <DatabaseManager.h>
+#include <filesystem>
 
 int main()
 {
-    DatabaseManager &db = DatabaseManager::getInstance();
-    Admin adm(1, "Alexey", "12345");
-    Reader user(1, "Sveta", "1506");
-    user.returnBook(1);
+
 }
