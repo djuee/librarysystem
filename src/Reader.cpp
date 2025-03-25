@@ -10,6 +10,13 @@ Reader::Reader(int id, std::string uname, std::string pass)
 Reader::Reader(int id, std::string uname, std::string passwordHash, char passwordKey)
     : User(id, uname, passwordHash, passwordKey, Role::READER) {}
 
+Reader::Reader(Reader&& other) noexcept
+    : User(std::move(other)),
+      m_bookList(std::move(other.m_bookList))
+{
+    other.m_bookList.clear();
+}
+
 bool Reader::takeBook(std::shared_ptr<Book> book)
 {
     if (book == nullptr)
