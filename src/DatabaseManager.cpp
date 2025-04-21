@@ -1,6 +1,10 @@
 #include "DatabaseManager.h"
 #include <iostream>
 
+static void logError(const std::string& context, const std::exception& e) {
+    std::cerr << "DatabaseManager❌ " << context << ": " << e.what() << std::endl;
+}
+
 DatabaseManager::DatabaseManager()
     : db("sqlite.db", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE)
 {
@@ -11,7 +15,6 @@ DatabaseManager::DatabaseManager()
             author TEXT NOT NULL,
             typeBook INTEGER NOT NULL,
             isAvailable BOOLEAN NOT NULL DEFAULT 1,
-            bookPath TEXT,
             subject INTEGER,
             level INTEGER,
             edition TEXT,
@@ -41,8 +44,7 @@ DatabaseManager::DatabaseManager()
             user_id INTEGER,
             action TEXT NOT NULL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            notes TEXT,
-            FOREIGN KEY(book_id) REFERENCES Books(book_id),
+            FOREIGN KEY(book_id) REFERENCES Books(id),
             FOREIGN KEY(user_id) REFERENCES Users(user_id)
         );
     )");
@@ -52,20 +54,19 @@ DatabaseManager::DatabaseManager()
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             book_id INTEGER NOT NULL UNIQUE,
             user_id INTEGER NOT NULL,
-            FOREIGN KEY(book_id) REFERENCES Books(book_id),
+            FOREIGN KEY(book_id) REFERENCES Books(id),
             FOREIGN KEY(user_id) REFERENCES Users(user_id)
         );
     )");
 }
 
-bool DatabaseManager::addBook(const std::shared_ptr<Book>& book)
-{
+bool DatabaseManager::addBook(const std::shared_ptr<Book>& book) {
     try {
         SQLite::Statement query(db, book->getInsertSQL());
         book->bindInsertParameters(query);
         return query.exec() > 0;
     } catch (const std::exception& e) {
-        std::cerr << "Ошибка добавления книги: " << e.what() << std::endl;
+        logError("addBook", e);
         return false;
     }
 }
@@ -74,8 +75,7 @@ bool DatabaseManager::addUser(int id,
                               const std::string& username,
                               const std::string& passwordHash,
                               int passwordKey,
-                              int role)
-{
+                              int role) {
     try {
         SQLite::Statement query(db, R"(
             INSERT INTO Users (user_id, username, passwordHash, passwordKey, role)
@@ -88,14 +88,12 @@ bool DatabaseManager::addUser(int id,
         query.bind(4, passwordKey);
         query.bind(5, role);
 
-        query.exec();
-        return true;
+        return query.exec() > 0;
     } catch (const std::exception& e) {
-        std::cerr << "❌ addUser: " << e.what() << std::endl;
+        logError("addUser", e);
         return false;
     }
 }
-
 
 std::shared_ptr<Book> DatabaseManager::loadBook(int bookId)
 {
@@ -109,7 +107,6 @@ std::shared_ptr<Book> DatabaseManager::loadBook(int bookId)
             std::string title = query.getColumn("title").getString();
             std::string author = query.getColumn("author").getString();
             bool isAvailable = query.getColumn("isAvailable").getInt();
-            std::string path = query.getColumn("bookPath").getString();
 
             if (type == TypeBook::textBook) {
                 Subject subject = static_cast<Subject>(query.getColumn("subject").getInt());
@@ -142,48 +139,63 @@ std::shared_ptr<Book> DatabaseManager::loadBook(int bookId)
             return nullptr;
         }
 
-    } catch (const std::exception& e) {
+    } catch (const std::exception& e)
+    {
+        logError("loadBook", e);
         return nullptr;
     }
 }
 
-
-bool DatabaseManager::markBookAsBorrowed(int bookId, int userId)
-{
+bool DatabaseManager::deleteBook(int id) {
     try {
-        // Установить статус "занята"
-        SQLite::Statement query(db, R"(
-            UPDATE Books
-            SET isAvailable = 0
-            WHERE id = ?
-        )");
-        query.bind(1, bookId);
-        query.exec();
+        SQLite::Statement deleteBookUser(db, "DELETE FROM BookUser WHERE book_id = ?");
+        deleteBookUser.bind(1, id);
+        deleteBookUser.exec();
 
-        // Добавить в таблицу BookUser
-        SQLite::Statement insertStmt(db, R"(
-            INSERT OR REPLACE INTO BookUser (book_id, user_id)
-            VALUES (?, ?)
-        )");
-        insertStmt.bind(1, bookId);
-        insertStmt.bind(2, userId);
-        insertStmt.exec();
+        SQLite::Statement deleteChanges(db, "DELETE FROM ChangesBook WHERE book_id = ?");
+        deleteChanges.bind(1, id);
+        deleteChanges.exec();
 
-        // Логируем
-        logBookAction(bookId, userId, "borrowed");
+        SQLite::Statement deleteBookStmt(db, "DELETE FROM Books WHERE id = ?");
+        deleteBookStmt.bind(1, id);
+        deleteBookStmt.exec();
 
         return true;
-    } catch (const std::exception& e) {
-        std::cerr << "❌ markBookAsBorrowed: " << e.what() << std::endl;
+    } catch (const std::exception& e)
+    {
+        logError("deleteBook", e);
         return false;
     }
 }
 
 
-bool DatabaseManager::markBookAsAvailable(int bookId)
-{
+bool DatabaseManager::markBookAsBorrowed(int bookId, int userId) {
     try {
-        // Найти пользователя перед удалением
+        SQLite::Statement query(db, R"(
+            UPDATE Books SET isAvailable = 0 WHERE id = ?
+        )");
+        query.bind(1, bookId);
+        query.exec();
+
+        SQLite::Statement insertStmt(db, R"(
+            INSERT OR REPLACE INTO BookUser (book_id, user_id) VALUES (?, ?)
+        )");
+        insertStmt.bind(1, bookId);
+        insertStmt.bind(2, userId);
+        insertStmt.exec();
+
+        logBookAction(bookId, userId, "borrowed");
+
+        return true;
+    } catch (const std::exception& e)
+    {
+        logError("markBookAsBorrowed", e);
+        return false;
+    }
+}
+
+bool DatabaseManager::markBookAsAvailable(int bookId) {
+    try {
         SQLite::Statement getUserStmt(db, "SELECT user_id FROM BookUser WHERE book_id = ?");
         getUserStmt.bind(1, bookId);
 
@@ -192,58 +204,68 @@ bool DatabaseManager::markBookAsAvailable(int bookId)
             userId = getUserStmt.getColumn(0).getInt();
         }
 
-        // Удаляем связь книга-пользователь
         SQLite::Statement deleteStmt(db, "DELETE FROM BookUser WHERE book_id = ?");
         deleteStmt.bind(1, bookId);
         deleteStmt.exec();
 
-        // Обновляем статус
-        SQLite::Statement query(db, R"(
-            UPDATE Books
-            SET isAvailable = 1
-            WHERE id = ?
-        )");
+        SQLite::Statement query(db, "UPDATE Books SET isAvailable = 1 WHERE id = ?");
         query.bind(1, bookId);
         query.exec();
 
-        // Логируем
         logBookAction(bookId, userId, "returned");
 
         return true;
-    } catch (const std::exception& e) {
-        std::cerr << "❌ markBookAsAvailable: " << e.what() << std::endl;
+    } catch (const std::exception& e)
+    {
+        logError("markBookAsAvailable", e);
         return false;
     }
 }
 
-
-bool DatabaseManager::deleteBook(int id)
+bool DatabaseManager::logBookAction(int bookId, std::optional<int> userId, const std::string& action)
 {
     try {
-        {
-            SQLite::Statement stmt(db, "DELETE FROM BookUser WHERE book_id = ?");
-            stmt.bind(1, id);
-            stmt.exec();
-        }
+        SQLite::Statement stmt(db, R"(
+            INSERT INTO ChangesBook (book_id, user_id, action)
+            VALUES (?, ?, ?)
+        )");
 
-        {
-            SQLite::Statement stmt(db, "DELETE FROM ChangesBook WHERE book_id = ?");
-            stmt.bind(1, id);
-            stmt.exec();
-        }
-        {
-            SQLite::Statement stmt(db, "DELETE FROM Books WHERE id = ?");
-            stmt.bind(1, id);
-            stmt.exec();
-        }
+        stmt.bind(1, bookId);
+        userId ? stmt.bind(2, *userId) : stmt.bind(2);
+        stmt.bind(3, action);
 
-        return true;
-    } catch (const std::exception& e) {
-        std::cerr << "❌ Ошибка при удалении книги: " << e.what() << std::endl;
+        return stmt.exec() > 0;
+    } catch (const std::exception& e)
+    {
+        logError("logBookAction", e);
         return false;
     }
 }
 
+std::list<std::shared_ptr<Book>> DatabaseManager::getBooksForUser(int userId)
+{
+    std::list<std::shared_ptr<Book>> books;
+
+    try
+    {
+        SQLite::Statement stmt(db, R"(
+            SELECT book_id FROM BookUser WHERE user_id = ?
+        )");
+        stmt.bind(1, userId);
+
+        while (stmt.executeStep())
+        {
+            int bookId = stmt.getColumn(0).getInt();
+            auto book = loadBook(bookId);
+            if (book) books.push_back(book);
+        }
+    } catch (const std::exception& e)
+    {
+        logError("getBooksForUser", e);
+    }
+
+    return books;
+}
 
 std::shared_ptr<User> DatabaseManager::loadUserById(int id)
 {
@@ -252,119 +274,66 @@ std::shared_ptr<User> DatabaseManager::loadUserById(int id)
         SQLite::Statement stmt(db, "SELECT username, passwordHash, passwordKey, role FROM Users WHERE user_id = ?");
         stmt.bind(1, id);
 
-        if (stmt.executeStep()) {
+        if (stmt.executeStep())
+        {
             std::string username = stmt.getColumn(0).getString();
             std::string passwordHash = stmt.getColumn(1).getString();
-            char passwordKey = static_cast<char>(stmt.getColumn(2).getInt());
+            int passwordKey = (stmt.getColumn(2).getInt());
             Role role = static_cast<Role>(stmt.getColumn(3).getInt());
 
-            if (role == Role::ADMIN) {
+            if (role == Role::ADMIN)
+            {
                 return std::make_shared<Admin>(id, username, passwordHash, passwordKey);
             } else {
-                // Загружаем ID всех книг пользователя
-                std::list<std::shared_ptr<Book>> books;
-                SQLite::Statement bookStmt(db, "SELECT book_id FROM BookUser WHERE user_id = ?");
-                bookStmt.bind(1, id);
-
-                while (bookStmt.executeStep()) {
-                    int bookId = bookStmt.getColumn(0).getInt();
-                    auto book = loadBook(bookId); // 💡 вызываем существующий метод
-                    if (book) {
-                        books.push_back(book);
-                    }
-                }
-
                 auto reader = std::make_shared<Reader>(id, username, passwordHash, passwordKey);
-                reader->setBookList(books);
+                reader->setBookList(getBooksForUser(id));
                 return reader;
             }
         }
-    }
-    catch (const std::exception& e) {
-        std::cerr << "❌ loadUserById: " << e.what() << std::endl;
+    } catch (const std::exception& e)
+    {
+        logError("loadUserById", e);
     }
 
     return nullptr;
 }
 
-std::shared_ptr<User> DatabaseManager::loadUserByName(std::string name)
+std::shared_ptr<User> DatabaseManager::loadUserByName(const std::string& name)
 {
     try
     {
-        SQLite::Statement stmt(db, "SELECT user_id, passwordHash, passwordKey, role FROM Users WHERE username = ?");
+        SQLite::Statement stmt(db, "SELECT user_id FROM Users WHERE username = ?");
         stmt.bind(1, name);
 
-        if (stmt.executeStep()) {
+        if (stmt.executeStep())
+        {
             int id = stmt.getColumn(0).getInt();
-            std::string passwordHash = stmt.getColumn(1).getString();
-            char passwordKey = static_cast<char>(stmt.getColumn(2).getInt());
-            Role role = static_cast<Role>(stmt.getColumn(3).getInt());
-
-            if (role == Role::ADMIN) {
-                return std::make_shared<Admin>(id, name, passwordHash, passwordKey);
-            } else {
-                std::list<std::shared_ptr<Book>> books;
-                SQLite::Statement bookStmt(db, "SELECT book_id FROM BookUser WHERE user_id = ?");
-                bookStmt.bind(1, id);
-
-                while (bookStmt.executeStep()) {
-                    int bookId = bookStmt.getColumn(0).getInt();
-                    auto book = loadBook(bookId); // 💡
-                    if (book) {
-                        books.push_back(book);
-                    }
-                }
-
-                auto reader = std::make_shared<Reader>(id, name, passwordHash, passwordKey);
-                reader->setBookList(books);
-                return reader;
-            }
+            return loadUserById(id);
         }
-    }
-    catch (const std::exception& e) {
-        std::cerr << "❌ loadUserById: " << e.what() << std::endl;
+    } catch (const std::exception& e)
+    {
+        logError("loadUserByName", e);
     }
 
     return nullptr;
 }
 
-bool DatabaseManager::logBookAction(int bookId, std::optional<int> userId, const std::string& action, const std::string& notes)
+std::list<LazyBook> DatabaseManager::getLazyBooks()
 {
-    try {
-        SQLite::Statement stmt(db, R"(
-            INSERT INTO ChangesBook (book_id, user_id, action, notes)
-            VALUES (?, ?, ?, ?)
-        )");
-
-        stmt.bind(1, bookId);
-        if (userId.has_value())
-            stmt.bind(2, userId.value());
-        else
-            stmt.bind(2); // NULL
-        stmt.bind(3, action);
-        stmt.bind(4, notes);
-
-        stmt.exec();
-        return true;
-    } catch (const std::exception& e) {
-        std::cerr << "❌ Ошибка при логировании действия: " << e.what() << std::endl;
-        return false;
-    }
-}
-
-std::list<LazyBook> DatabaseManager::getLazyBooks() {
     std::list<LazyBook> result;
 
     try {
-        SQLite::Statement stmt(db, "SELECT id, typeBook FROM Books");
+        SQLite::Statement stmt(db, "SELECT id, typeBook, title FROM Books");
 
         while (stmt.executeStep()) {
             int id = stmt.getColumn(0).getInt();
             int type = stmt.getColumn(1).getInt();
-            result.emplace_back(id, type);
+            std::string title = stmt.getColumn(2).getString();
+            result.emplace_back(id, type, title);
         }
-    } catch (const std::exception& e) {
-        std::cerr << "❌ Ошибка при получении ленивых книг: " << e.what() << std::endl;
+    } catch (const std::exception& e)
+    {
+        logError("getLazyBooks", e);
     }
 
     return result;
@@ -374,42 +343,31 @@ std::list<LazyReader> DatabaseManager::getLazyReaders() {
     std::list<LazyReader> result;
 
     try {
-        SQLite::Statement stmt(db, "SELECT user_id, username FROM Users");
+        SQLite::Statement stmt(db, "SELECT user_id, username FROM Users WHERE role = ?");
 
-        while (stmt.executeStep()) {
+        stmt.bind(1, static_cast<int>(Role::READER));
+
+        while (stmt.executeStep())
+        {
             int id = stmt.getColumn(0).getInt();
             std::string username = stmt.getColumn(1).getString();
 
             result.emplace_back(id, username);
         }
-    } catch (const std::exception& e) {
-        std::cerr << "❌ Ошибка при получении ленивых пользователей: " << e.what() << std::endl;
+    } catch (const std::exception& e)
+    {
+        logError("getLazyReaders", e);
     }
 
     return result;
 }
 
-int DatabaseManager::getLastIdFromTable(const std::string& tableName, const std::string& idColumn) {
-    try {
-        std::string queryStr = "SELECT MAX(" + idColumn + ") FROM " + tableName;
-        SQLite::Statement query(db, queryStr);
-
-        if (query.executeStep()) {
-            return query.getColumn(0).isNull() ? 0 : query.getColumn(0).getInt();
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "❌ Ошибка при получении последнего ID из таблицы '" << tableName << "': " << e.what() << std::endl;
-    }
-
-    return 0;
-}
-
-std::list<std::shared_ptr<LazyBook>> DatabaseManager::getBooksByUserId(int userId) {
+std::list<std::shared_ptr<LazyBook>> DatabaseManager::getLazyBooksByUserId(int userId) {
     std::list<std::shared_ptr<LazyBook>> result;
 
     try {
         SQLite::Statement stmt(db, R"(
-            SELECT Books.id, Books.typeBook
+            SELECT Books.id, Books.typeBook, Books.title
             FROM Books
             JOIN BookUser ON Books.id = BookUser.book_id
             WHERE BookUser.user_id = ?
@@ -420,20 +378,35 @@ std::list<std::shared_ptr<LazyBook>> DatabaseManager::getBooksByUserId(int userI
         while (stmt.executeStep()) {
             int bookId = stmt.getColumn(0).getInt();
             int type = stmt.getColumn(1).getInt();
-
-            result.push_back(std::make_shared<LazyBook>(bookId, type));
+            std::string title = stmt.getColumn(2).getString();
+            result.emplace_back(std::make_shared<LazyBook>(bookId, type, title));
         }
-
     } catch (const std::exception& e) {
-        std::cerr << "❌ DatabaseManager::getBooksByUserId: " << e.what() << std::endl;
+        logError("getBooksByUserId", e);
     }
 
     return result;
 }
 
 
-DatabaseManager& DatabaseManager::getInstance()
-{
+int DatabaseManager::getLastIdFromTable(const std::string& tableName, const std::string& idColumn) {
+    try {
+        std::string queryStr = "SELECT MAX(" + idColumn + ") FROM " + tableName;
+        SQLite::Statement query(db, queryStr);
+
+        if (query.executeStep())
+        {
+            return query.getColumn(0).isNull() ? 0 : query.getColumn(0).getInt();
+        }
+    } catch (const std::exception& e)
+    {
+        logError("getLastIdFromTable", e);
+    }
+
+    return 0;
+}
+
+DatabaseManager& DatabaseManager::getInstance() {
     static DatabaseManager instance;
     return instance;
 }

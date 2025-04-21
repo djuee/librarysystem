@@ -27,9 +27,9 @@ std::string TextBook::getSubject()
 std::string TextBook::getInsertSQL() const {
     return R"(
         INSERT INTO Books (
-            id, title, author, typeBook, isAvailable, bookPath,
+            id, title, author, typeBook, isAvailable,
             subject, level, edition
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     )";
 }
 
@@ -39,8 +39,7 @@ void TextBook::bindInsertParameters(SQLite::Statement& query) const {
     query.bind(3, m_author);
     query.bind(4, TypeBook::textBook);
     query.bind(5, m_isAvailable);
-    query.bind(6, m_bookPath);
-    query.bind(7, m_subject);
-    query.bind(8, m_level);
-    query.bind(9, m_edition);
+    query.bind(6, m_subject);
+    query.bind(7, m_level);
+    query.bind(8, m_edition);
 }

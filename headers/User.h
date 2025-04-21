@@ -12,11 +12,17 @@ enum class Role {
 
 class User {
 public:
+    User(User& other) = delete;
+    User& operator =(User& other) = delete;
+    User(User&& other) noexcept;
+    User& operator =(User&& other) = delete;
+
     int getId() const;
     std::string getUsername() const;
     int getPassKey() const;
     std::string getPassHash() const;
-    Role getRole() const;
+    int getRole() const;
+
     bool checkPassword(const std::string& inputPassword);
     void changeUsername(std::string uname);
 
@@ -31,5 +37,4 @@ protected:
     int m_passwordKey;
     std::string m_passwordHash;
     Role m_role;
-    std::list<std::shared_ptr<Book>> bookList;
 };

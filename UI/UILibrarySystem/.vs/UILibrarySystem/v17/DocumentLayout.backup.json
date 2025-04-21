@@ -1,0 +1,106 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|c:\\users\\nulev\\git\\librarysystem\\ui\\uilibrarysystem\\readerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|solutionrelative:readerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|c:\\users\\nulev\\git\\librarysystem\\ui\\uilibrarysystem\\adminform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|solutionrelative:adminform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\adminform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|solutionrelative:adminform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|c:\\users\\nulev\\git\\librarysystem\\ui\\uilibrarysystem\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|solutionrelative:loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\readerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{91A05C16-4979-4B3A-87F4-152246CF3D01}|UILibrarySystem.csproj|solutionrelative:readerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AdminForm.cs",
+              "DocumentMoniker": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\AdminForm.cs",
+              "RelativeDocumentMoniker": "AdminForm.cs",
+              "ToolTip": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\AdminForm.cs",
+              "RelativeToolTip": "AdminForm.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAA5wCUAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-21T20:17:24.967Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AdminForm.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "DocumentMoniker": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\AdminForm.cs",
+              "RelativeDocumentMoniker": "AdminForm.cs",
+              "ToolTip": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\AdminForm.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "RelativeToolTip": "AdminForm.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-21T19:42:29.982Z",
+              "EditorCaption": " [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ReaderForm.cs",
+              "DocumentMoniker": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\ReaderForm.cs",
+              "RelativeDocumentMoniker": "ReaderForm.cs",
+              "ToolTip": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\ReaderForm.cs",
+              "RelativeToolTip": "ReaderForm.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAB8AAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-21T19:37:47.2Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ReaderForm.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "DocumentMoniker": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\ReaderForm.cs",
+              "RelativeDocumentMoniker": "ReaderForm.cs",
+              "ToolTip": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\ReaderForm.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "RelativeToolTip": "ReaderForm.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-21T19:31:05.815Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LoginForm.cs",
+              "DocumentMoniker": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\LoginForm.cs",
+              "RelativeDocumentMoniker": "LoginForm.cs",
+              "ToolTip": "C:\\Users\\nulev\\git\\librarysystem\\UI\\UILibrarySystem\\LoginForm.cs",
+              "RelativeToolTip": "LoginForm.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAowBoAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-21T19:05:43.63Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

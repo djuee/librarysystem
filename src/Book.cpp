@@ -38,13 +38,3 @@ void Book::markAsAvailable() {
 bool Book::isAvailable() const {
     return m_isAvailable;
 }
-
-std::string Book::getBookText(const std::string& filePath) const {
-    std::ifstream file(filePath);
-    if (!file) {
-        return "";
-    }
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    return buffer.str();
-}

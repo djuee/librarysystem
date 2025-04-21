@@ -27,9 +27,9 @@ int Novel::getPublishedYear()
 std::string Novel::getInsertSQL() const {
     return R"(
         INSERT INTO Books (
-            id, title, author, typeBook, isAvailable, bookPath,
+            id, title, author, typeBook, isAvailable,
             genre, publishedYear, countPages
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     )";
 }
 
@@ -39,9 +39,8 @@ void Novel::bindInsertParameters(SQLite::Statement& query) const {
     query.bind(3, m_author);
     query.bind(4, TypeBook::novel);
     query.bind(5, m_isAvailable);
-    query.bind(6, m_bookPath);
-    query.bind(7, m_genre);
-    query.bind(8, m_publishedYear);
-    query.bind(9, m_countPages);
+    query.bind(6, m_genre);
+    query.bind(7, m_publishedYear);
+    query.bind(8, m_countPages);
 }
 

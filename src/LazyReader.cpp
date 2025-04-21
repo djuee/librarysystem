@@ -28,7 +28,7 @@ void LazyReader::update()
     try {
         DatabaseManager& db = DatabaseManager::getInstance();
 
-        m_bookList = db.getBooksByUserId(m_id);
+        m_bookList = db.getLazyBooksByUserId(m_id);
     } catch (const std::exception& e) {
         std::cerr << "❌ LazyReader::update(): ошибка при обновлении книг: " << e.what() << std::endl;
     }

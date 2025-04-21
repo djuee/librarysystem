@@ -1,8 +1,8 @@
 #include <LazyBook.h>
 #include <DatabaseManager.h>
 
-LazyBook::LazyBook(int id, int typeBook)
-    : m_id(id), m_typeBook(typeBook) {}
+LazyBook::LazyBook(int id, int typeBook, std::string title)
+    : m_id(id), m_typeBook(typeBook), m_title(title) {}
 
 int LazyBook::getId() const
 {
@@ -12,6 +12,11 @@ int LazyBook::getId() const
 int LazyBook::getTypeBook() const
 {
     return m_typeBook;
+}
+
+std::string LazyBook::getTitle()
+{
+    return m_title;
 }
 
 bool LazyBook::isLoaded()
