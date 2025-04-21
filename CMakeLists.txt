@@ -6,51 +6,28 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(${CMAKE_SOURCE_DIR}/src/)
 include_directories(${CMAKE_SOURCE_DIR}/headers/)
 
-# Добавляем подмодуль SQLiteCpp
+set(ASIO_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/asio/asio/include)
+set(ASIO_FOUND TRUE)
+
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/external/SQLiteCpp/)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/external/crow/)
 
-# Основные исходники
-set(SOURCES
-    src/Book.cpp
-    src/User.cpp
-    src/DatabaseManager.cpp
-    src/main.cpp
-    src/PasswordManager.cpp
-    src/Reader.cpp
-    src/Admin.cpp
-    src/ResearchPaper.cpp
-    src/TextBook.cpp
-    src/Novel.cpp
-    src/LazyBook.cpp
-    src/LazyReader.cpp
-    src/Controller.cpp
-)
+file(GLOB SOURCES "src/*.cpp")
 
-set(HEADERS
-    headers/Book.h
-    headers/User.h
-    headers/Admin.h
-    headers/Reader.h
-    headers/PasswordManager.h
-    headers/ResearchPaper.h
-    headers/TextBook.h
-    headers/Novel.h
-    headers/DatabaseManager.h
-    headers/LazyBook.h
-    headers/LazyReader.h
-    headers/Controller.h
-)
+file(GLOB HEADERS "headers/*.h")
 
-# Создаём исполняемый файл
 add_executable(LibrarySystem ${SOURCES} ${HEADERS})
 
-# Линкуем SQLiteCpp и SQLite3
 target_link_libraries(LibrarySystem
     SQLiteCpp
     sqlite3
 )
 
-# Добавляем pthread и dl только на UNIX-системах
+target_include_directories(LibrarySystem PRIVATE
+    external/crow/include
+    ${ASIO_INCLUDE_DIR}
+)
+
 if (UNIX)
     find_package(Threads REQUIRED)
     target_link_libraries(LibrarySystem

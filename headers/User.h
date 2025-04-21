@@ -21,7 +21,7 @@ public:
     std::string getUsername() const;
     int getPassKey() const;
     std::string getPassHash() const;
-    Role getRole() const;
+    int getRole() const;
 
     bool checkPassword(const std::string& inputPassword);
     void changeUsername(std::string uname);

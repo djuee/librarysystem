@@ -18,7 +18,7 @@ public:
 
     bool takeBook(std::shared_ptr<Book> book);
     bool returnBook(std::shared_ptr<Book> book);
-    std::list<std::shared_ptr<Book>> getBookList();
+    std::list<std::shared_ptr<Book>> getBookList() const;
     void setBookList(const std::list<std::shared_ptr<Book>>& books);
 
 private:

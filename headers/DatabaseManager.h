@@ -41,8 +41,7 @@ public:
 
     bool logBookAction(int bookId,
                        std::optional<int> userId,
-                       const std::string& action,
-                       const std::string& notes = "");
+                       const std::string& action);
 
     std::list<LazyBook> getLazyBooks();
     std::list<LazyReader> getLazyReaders();

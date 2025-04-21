@@ -27,9 +27,9 @@ std::string ResearchPaper::getField()
 std::string ResearchPaper::getInsertSQL() const {
     return R"(
         INSERT INTO Books (
-            id, title, author, typeBook, isAvailable, bookPath,
+            id, title, author, typeBook, isAvailable,
             field, conference, doi
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     )";
 }
 
@@ -39,8 +39,7 @@ void ResearchPaper::bindInsertParameters(SQLite::Statement& query) const {
     query.bind(3, m_author);
     query.bind(4, TypeBook::researchPaper);
     query.bind(5, m_isAvailable);
-    query.bind(6, m_bookPath);
-    query.bind(7, m_field);
-    query.bind(8, m_conference);
-    query.bind(9, m_doi);
+    query.bind(6, m_field);
+    query.bind(7, m_conference);
+    query.bind(8, m_doi);
 }

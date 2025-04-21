@@ -30,7 +30,6 @@ protected:
     std::string m_author;
     bool m_isAvailable{true};
     TypeBook m_typeBook;
-    std::string m_bookPath;
 };
 
 

@@ -1,3 +1,9 @@
 [submodule "external/SQLiteCpp"]
 	path = external/SQLiteCpp
 	url = https://github.com/SRombauts/SQLiteCpp.git
+[submodule "external/crow"]
+	path = external/crow
+	url = https://github.com/CrowCpp/crow.git
+[submodule "external/asio"]
+	path = external/asio
+	url = https://github.com/chriskohlhoff/asio.git

@@ -47,6 +47,11 @@ bool Reader::returnBook(std::shared_ptr<Book> book) {
     return false;
 }
 
+std::list<std::shared_ptr<Book>> Reader::getBookList() const
+{
+    return m_bookList;
+}
+
 void Reader::setBookList(const std::list<std::shared_ptr<Book>>& books)
 {
     m_bookList = books;

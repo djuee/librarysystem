@@ -43,8 +43,9 @@ std::string User::getPassHash() const
     return m_passwordHash;
 }
 
-Role User::getRole() const {
-    return m_role;
+int User::getRole() const
+{
+    return static_cast<int>(m_role);
 }
 
 bool User::checkPassword(const std::string& inputPassword) {
